@@ -5,12 +5,16 @@ export const radioPlayerInit = () => {
   const radioItem = document.querySelectorAll('.radio-item');
   const radioNavigation = document.querySelector('.radio-navigation');
   const radioStop = document.querySelector('.radio-stop');
+  const radioVolume = document.querySelector('.radio-volume');
+  const radioMute = document.querySelector('.radio-mute');
 
   // Создание нового объекта Audio
   const audio = new Audio();
 
   // Определение типа нашего Audio
   audio.type = 'audio/aac';
+
+  let prevVolume = audio.volume;
 
   radioStop.disabled = true;
 
@@ -61,4 +65,22 @@ export const radioPlayerInit = () => {
     changeIconPlay();
   });
   
+  // Контролы радио
+  radioVolume.addEventListener('input', () => {
+    audio.volume = radioVolume.value / 100;
+    audio.muted = false;
+  });
+
+  radioMute.addEventListener('click', () => {
+    if (audio.volume) {
+      audio.muted = !audio.muted;
+    }
+  });
+
+  radioVolume.value = audio.volume * 100;
+
+  return () => {
+    audio.pause();
+    changeIconPlay();
+  };
 };

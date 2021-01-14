@@ -1,3 +1,5 @@
+import { addZero } from './supScript.js';
+
 export const videoPlayerInit = () => {
   const videoPlayer = document.querySelector('.video-player');
   const videoButtonPlay = document.querySelector('.video-button__play');
@@ -11,8 +13,19 @@ export const videoPlayerInit = () => {
   // Открывать фулл-скрин
   videoFullscreen.addEventListener('click', () => {
     videoPlayer.requestFullscreen();
+    videoPlayer.controls = true;
   });
 
+  // для Firefox контролы
+  videoPlayer.addEventListener('fullscreenchange', () => {
+    if (document.fullscreen) {
+      videoPlayer.controls = true;
+    } else {
+      videoPlayer.controls = false;
+    }
+  });
+ 
+  // Смена иконки паузы и воспроизведения
   const toggleIcon = () => {
     if (videoPlayer.paused) {
       videoButtonPlay.classList.remove('fa-pause');
@@ -37,8 +50,6 @@ export const videoPlayerInit = () => {
     videoPlayer.pause();
     videoPlayer.currentTime = 0;
   };
-
-  const addZero = n => n < 10 ? '0' + n : n;
 
   const changeValue = () => {
     const valueVolume = videoVolume.value;
@@ -85,5 +96,10 @@ export const videoPlayerInit = () => {
   });
 
   changeValue();
+
+  return () => {
+    videoPlayer.pause();
+    toggleIcon();
+  };
 
 }
